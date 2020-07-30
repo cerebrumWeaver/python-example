@@ -61,9 +61,8 @@ def start():
     for keyword in keywords:
         num = num+1
         url = 'https://m.sm.cn/s?q='+keyword+'&by=submit&from=smor&tomode=center&safe=1'
-        sleep(2)
         google_driver.get(url)
-        sleep(2)
+        sleep(4)
         cookie_dict=google_driver.get_cookies()
         sess=requests.session()
         jar=RequestsCookieJar()
