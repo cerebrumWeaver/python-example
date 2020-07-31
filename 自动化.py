@@ -3,6 +3,7 @@ from time import sleep
 from selenium.webdriver.chrome.options import Options
 import requests
 from requests.cookies import RequestsCookieJar
+from lxml import etree
 #启动谷歌浏览器
 # chrome_options = webdriver.ChromeOptions() 
 # chrome_options.add_argument('--no-sandbox')
@@ -10,13 +11,27 @@ from requests.cookies import RequestsCookieJar
 
 options = Options()
 # options.binary_location=r'C:/Users/Administrator/AppData/Local/Programs/Python/Python37/chromedriver.exe' 
-options.add_experimental_option("debuggerAddress", "127.0.0.1:8081")
+options.add_experimental_option("debuggerAddress", "127.0.0.1:12306")
 
 driver = webdriver.Chrome(options = options)
 # driver.maximize_window()
-# http://desktop.baibaiguanjia.com/#/
-url_zuzhuang='http://3ganxiaoshuncom.wz.jgyljt.com/dede/index.php'
+# http://desktop.baibaiguanjia.com/#/<div class="fllct"><a href="catalog_main.php" target="main">网站栏目管理</a></div>
+url_zuzhuang='http://wwwnbbaibaicom.wz2.jgyljt.com/dede/index.php'
 driver.get(url_zuzhuang)
+driver.switch_to.frame('menufra')  #需先跳转到iframe框架
+# driver.find_element_by_xpath("//div[@class='left']//div[@class='fllct']//a").click()
+# driver.find_element_by_link_text('catalog_main.php').click()
+
+aElements = driver.find_elements_by_tag_name("a")
+
+for name in aElements:
+    print(name)
+    if(name.get_attribute("href") is not None and "catalog_main.php" in name.get_attribute("href")):
+        print("IM IN HUR")
+        name.click()
+        break
+
+
 cookie_dict=driver.get_cookies()
 sess=requests.session()
 jar=RequestsCookieJar()
@@ -24,7 +39,11 @@ for cookie in cookie_dict:
         jar.set(cookie['name'], cookie['value'])
 
 data=sess.get(url_zuzhuang,cookies=jar)
-print(data.content.decode('utf-8'))
+data=data.content.decode('utf-8')
+print(data)
+lxml_html = etree.HTML(data)
+
+print(lxml_html.xpath("//div[@class='left']//div[@class='fllct']"))
 
 
 
