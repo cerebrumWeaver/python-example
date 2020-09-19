@@ -1,14 +1,14 @@
 import threading
-from showtime import timeit
+from showtime import runningtime
 
-@timeit
+@runningtime
 def add(lock):
     global money
     for i in range(1000000):
         lock.acquire()
         money += 1
         lock.release()
-@timeit
+@runningtime
 def reduce(lock):
     global money
     for i in range(1000000):

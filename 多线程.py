@@ -1,10 +1,12 @@
 import threading
-from showtime import timeit
+from time import sleep
+from showtime import runningtime
 from queue import Queue
 
 def job(li, queue2):
+    sleep(1)
     queue2.put(sum(li))
-@timeit
+@runningtime
 def use_thread():
     q = Queue()
     # q.get()
@@ -18,7 +20,6 @@ def use_thread():
         threads.append(t)
     [thread.join() for thread in threads]
     results = [q.get() for li in lis]
-    # results = [q.get()]
     print(results)
     
 

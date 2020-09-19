@@ -7,8 +7,8 @@ driver=webdriver.Chrome()
 #访问一个网页
 driver.get("https://github.com/login")
 
-#回退上一页
-driver.maximize_window()
+# 窗口最大化
+# driver.maximize_window()
 sleep(2)
 username=driver.find_element_by_id('login_field')
 password=driver.find_element_by_id('password')
@@ -18,7 +18,8 @@ password.send_keys('678567okytfytm')
 btn.click()
 sleep(2)
 
-driver.back()
+# #回退上一页
+# driver.back()
 
 #回到下一页
 
@@ -26,7 +27,7 @@ driver.forward()
 
 #刷新
 
-driver.refresh()
+# driver.refresh()
 
 #获取标题
 

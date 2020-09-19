@@ -1,7 +1,8 @@
 import threading
 from urllib.request import urlopen
+from showtime import runningtime
 
-DOWNLOAD_DIR = 'C:/Users/Administrator/Desktop/'
+DOWNLOAD_DIR = 'C:/Users/Administrator/Desktop/img/'
 class DownloadThread(threading.Thread):
     def __init__(self, url, i):
         super(DownloadThread, self).__init__()
@@ -23,15 +24,19 @@ class DownloadThread(threading.Thread):
                     if not imgContentChunk:
                         break
                     f.write(imgContentChunk)
-                print("%s下载成功" %(filename))
+                print("%s下载成功\t%s" %(filename,threading.currentThread().name))
 
 url1 = 'http://nbimg.jgyljt.com/newImgs/img/157267440683ab7.jpg?t=1595501364000'
 url2 = 'http://nbimg.jgyljt.com/newImgs/img/157267440407d35.jpg?t=1595501364000'
 url3 = 'http://nbimg.jgyljt.com/newImgs/img/157267440587b52.jpg?t=1595501364000'
 urls = [url1, url2, url3]
+for i in range(3):
+    urls.extend(urls)
+print(urls)
 i = 0
+lock = threading.Lock()
 for url in urls:
     i+=1
-    print("i=%d" %(i))
+    print("i=%d\t%s" %(i,threading.currentThread().name))
     thread = DownloadThread(url, i)
     thread.start()

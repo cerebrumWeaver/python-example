@@ -1,4 +1,3 @@
-import threading
 import requests 
 from selenium import webdriver
 from bs4 import BeautifulSoup
@@ -6,7 +5,6 @@ import re
 from lxml import etree
 from threading import Thread, Lock, enumerate
 from time import sleep
-import random
 from showtime import runningtime
 from requests.cookies import RequestsCookieJar
 import xlrd
@@ -22,26 +20,26 @@ for i in range(30):
     domain_names.append(sheet.cell(i, 1))
 # 进入浏览器设置
 options = webdriver.ChromeOptions()
-options.add_argument('user-agent="Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Mobile Safari/537.36"')
-
+options.add_argument('user-agent="Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1"')
+# 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Mobile Safari/537.36'
 
 google_driver = webdriver.Chrome(chrome_options=options) #启动谷歌
 google_driver.maximize_window()  # 最大化窗口
-
+# 下载数据
 def download_sm(url, sess, jar, i, keyword):
     print('--------------------------正在下载第' + str(i) + '篇"'+keyword+'"的URL域名--------------------------')
     header = {
         "User-Agent": 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Mobile Safari/537.36'
     }
     # html = requests.get(url, headers=header).content.decode('utf-8')  # 下载并解码
+    # 苹果6/7/8'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1'
     data=sess.get(url,cookies=jar, headers=header).content.decode('utf-8')
     soup = BeautifulSoup(data, 'html.parser')
     pretty_html = soup.prettify()
     return pretty_html
 
-
+# 提取信息
 def data_clean(pretty_html, num):
-    # print(pretty_html)    #输出源码
     lxml_html = etree.HTML(pretty_html)
     list_advertisement_url = lxml_html.xpath("//div[@class='other']")
     # list_advertisement = lxml_html.xpath("//div[@class='other']//span")
@@ -51,10 +49,11 @@ def data_clean(pretty_html, num):
         value = value.text.strip()
         i = i+1
         if(value == domain_names[num-1].value):
-             print(value+"\t序号："+str(i)+"\t\t"+domain_names[num-1].value)
+            print(format(value, '<25'), format(("序号："+str(i)), '<6'), format((""+domain_names[num-1].value),'<30'))
         else:
-            print(value+"\t序号："+str(i))
-        
+            print(format(value, '<25'), format(("序号："+str(i)), '<6'))
+
+# 程序入口       
 @runningtime
 def start():
     num = 0
@@ -67,8 +66,7 @@ def start():
         sess=requests.session()
         jar=RequestsCookieJar()
         for cookie in cookie_dict:
-                jar.set(cookie['name'], cookie['value'])
-
+            jar.set(cookie['name'], cookie['value'])
         pretty_html = download_sm(url, sess, jar, num, keyword)
         # print(pretty_html)
         data_clean(pretty_html, num)
