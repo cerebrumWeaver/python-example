@@ -1,0 +1,46 @@
+from selenium import webdriver
+import pyautogui as gui
+from requests.cookies import RequestsCookieJar
+from time import sleep
+from pynput.mouse import Button, Controller
+import re
+
+# driver = webdriver.Firefox(executable_path=r'C:\Users\helix\Desktop\geckodriver.exe')
+driver = webdriver.Chrome(executable_path=r'C:\Program Files\Google\Chrome\Application\chromedriver.exe')
+
+urls  = ['http://biocc.hrbmu.edu.cn/CellMarker/search.jsp?species=Human&tissue=Adipose tissue&cellname=Endothelial cell',
+ 'http://biocc.hrbmu.edu.cn/CellMarker/search.jsp?species=Human&tissue=Adipose tissue&cellname=Fat cell (adipocyte)',
+ 'http://biocc.hrbmu.edu.cn/CellMarker/search.jsp?species=Human&tissue=Adipose tissue&cellname=Macrophage',
+ 'http://biocc.hrbmu.edu.cn/CellMarker/search.jsp?species=Human&tissue=Adipose tissue&cellname=Monocyte']
+ 
+ 
+ cellMaker_label = {}
+pattern1 = re.compile(r'\?species=(.*?)&')
+pattern2 = re.compile(r'&tissue=(.*?)&')
+pattern3 = re.compile(r"&cellname=(.*)")
+
+
+
+for i, url in enumerate(urls):
+    try:
+        driver.get(url)
+        sleep(8)
+
+        csv = driver.find_elements_by_xpath('//*[@id="wordCloudtestTable_wrapper"]/div[2]/button[2]')
+
+        print(pattern1.findall(url)+pattern2.findall(url)+ pattern3.findall(url))
+        cellMaker_label[i] = pattern1.findall(url) + pattern2.findall(url) + pattern3.findall(url)
+        csv[0].click()
+        gui.moveTo(500, 550)
+        gui.click()
+        gui.moveTo(735, 630)
+        mouse = Controller()
+        gui.sleep(0.5)
+        mouse.click(Button.left)
+    except Exception:
+        cellMaker_label[i] = ['该网站刷新过慢', '无法定位对应cellMaker', '请手动查看确认']
+    continue
+with open(r'C:\Users\helix\Desktop\cellMaker_label.txt', mode='a+') as f:
+    for i, content in cellMaker_label.items():
+        f.write(str(i) + '：' + content[0] + '——' + content[1] + '——' + content[2] + '\n')
+        print(type(str(i)), content[0] + '——' + content[1] + '——' + content[2])
