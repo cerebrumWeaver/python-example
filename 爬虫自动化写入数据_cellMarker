@@ -14,7 +14,7 @@ urls  = ['http://biocc.hrbmu.edu.cn/CellMarker/search.jsp?species=Human&tissue=A
  'http://biocc.hrbmu.edu.cn/CellMarker/search.jsp?species=Human&tissue=Adipose tissue&cellname=Monocyte']
  
  
- cellMaker_label = {}
+cellMaker_label = {}
 pattern1 = re.compile(r'\?species=(.*?)&')
 pattern2 = re.compile(r'&tissue=(.*?)&')
 pattern3 = re.compile(r"&cellname=(.*)")
