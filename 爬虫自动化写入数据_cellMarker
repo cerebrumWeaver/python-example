@@ -20,7 +20,6 @@ pattern2 = re.compile(r'&tissue=(.*?)&')
 pattern3 = re.compile(r"&cellname=(.*)")
 
 
-
 for i, url in enumerate(urls):
     try:
         driver.get(url)
